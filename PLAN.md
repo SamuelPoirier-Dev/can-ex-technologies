@@ -8,7 +8,7 @@ Timebox : 2 heures. Backend Python + FastAPI, frontend React + TypeScript.
 |---|---|---|
 | 1 | Squelette exécutable de bout en bout (FastAPI + Vite/React/TS, `/api/health`) | Fait |
 | 2 | Moteur de jeu pur + tests unitaires des règles | Fait |
-| 3 | API REST : créer, rejoindre, lire l'état, jouer son tour | À faire |
+| 3 | API REST : créer, rejoindre, lire l'état, jouer son tour | Fait |
 | 4 | Temps réel : WebSocket par partie, diffusion de l'état | À faire |
 | 5 | Frontend jouable : lobby, plateau, joueurs, tour, journal, gagnant | À faire |
 | 6 | Finition : README complet, essai réel à plusieurs onglets | À faire |
@@ -75,3 +75,25 @@ jamais les tests du moteur.
   qu'une partie de démonstration finisse vite (~20 tours à 2 joueurs, ~50 à 4).
   Ce sont des constantes ajustables ; `tests/game/test_balance.py` garantit
   qu'une partie à 2 joueurs se termine en moins de 200 tours.
+- **D25 — `GameRoom` autour de `Game`** (`app/rooms.py`) : associe les jetons aux
+  joueurs (et, à l'étape 4, les connexions WebSocket). Le domaine ignore jetons et
+  réseau. `RoomRegistry` stocke les salles en mémoire (`{code: GameRoom}`).
+- **D26 — Code de partie** : 6 caractères sans 0/O ni 1/I ; sert d'identifiant
+  dans l'URL ; accepté sans tenir compte de la casse.
+- **D27 — Jeton** : `secrets.token_urlsafe`, envoyé en `Authorization: Bearer`.
+  L'identité du joueur est déduite du jeton, jamais d'un id envoyé par le client.
+  Le dé est tiré par le serveur, jamais fourni par le client.
+- **D28 — Dé injecté par `Depends(get_dice)`** : les tests le remplacent par un dé
+  fixe via `dependency_overrides`.
+- **D29 — Erreurs → HTTP** (`app/main.py`) : partie inconnue 404, jeton
+  absent/invalide 401, autres `GameError` 409 (conflit avec l'état) ; entrées
+  invalides 422 via Pydantic.
+- **D30 — Concurrence** : routes `async` sans `await` pendant la modification
+  d'une partie ; sur un seul processus, pas d'entrelacement, donc pas de verrou.
+  À revoir avec plusieurs processus (il faudrait aussi un stockage partagé).
+- **D31 — État complet dans chaque réponse** (`game_state` dans
+  `app/api/schemas.py`) : plateau avec propriétaires, joueurs, joueur actif,
+  statut, gagnant, journal ; chaque événement porte un champ `type`. Jamais de
+  jeton. Le même état sera poussé par WebSocket (étape 4).
+- **D32 — Fabrique `create_app()`** : chaque test crée une app neuve avec son
+  propre registre, donc pas d'état partagé entre tests.
