@@ -9,24 +9,42 @@ la partie évoluer en direct (déplacements, achats, loyers, faillites, gagnant)
 - **Frontend** : React + TypeScript (Vite).
 - **Suivi du travail** : les étapes et toutes les décisions numérotées (D1 à D44)
   sont dans [PLAN.md](PLAN.md).
+- **Méthode de travail** : ce projet a été mené avec le flux de travail décrit
+  dans [.claude/skills/flow-dev/SKILL.md](.claude/skills/flow-dev/SKILL.md),
+  celui que j'utilise habituellement. En bref : ambiguïtés levées et plan
+  validé avant de coder ; puis, pour chaque étape, proposition, exécution
+  vérifiée, récapitulatif et revue, avec un commit seulement après validation.
+  L'historique Git (un commit par étape) et PLAN.md en sont la trace.
 
 ## Lancer le projet
 
 Prérequis : [uv](https://docs.astral.sh/uv/) (il installe Python 3.12 tout
 seul) et Node.js 20+ avec npm.
 
-Dans deux terminaux :
+Dans deux terminaux, chacun ouvert **à la racine du dépôt** :
 
 ```bash
-# Terminal 1, depuis backend/
+# Terminal 1 : backend
+cd backend
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
 ```bash
-# Terminal 2, depuis frontend/
+# Terminal 2 : frontend
+cd frontend
 npm install
 npm run dev
 ```
+
+> **Attention au dossier courant.** Les commandes `uv` doivent être lancées
+> depuis `backend/` (là où se trouve `pyproject.toml`), et les commandes `npm`
+> depuis `frontend/` (là où se trouve `package.json`). Lancées depuis la
+> racine :
+>
+> - `uv run` échoue avec `error: Failed to spawn: uvicorn` ;
+> - `npm install` et `npm run dev` échouent avec `npm error code ENOENT`
+>   (`package.json` introuvable), et `npm install` laisse en plus un
+>   `package-lock.json` vide à la racine, à supprimer.
 
 Puis ouvrir http://localhost:5173. Le serveur Vite redirige `/api` et `/ws`
 vers le backend (port 8000), donc le navigateur ne parle qu'à une seule adresse.
@@ -41,8 +59,10 @@ http://localhost:8000/docs.
 
 ## Lancer les tests
 
+Depuis la racine du dépôt :
+
 ```bash
-# Depuis backend/
+cd backend
 uv run pytest
 ```
 
