@@ -34,3 +34,10 @@ backend (port 8000).
 # Depuis backend/
 uv run pytest
 ```
+
+## Avec plus de temps
+
+- **Plateaux personnalisables** : permettre de personnaliser les cases du
+  plateau, sur le modèle des extensions (add-ons) des jeux de table modernes.
+  Le plateau est déjà une définition statique séparée de l'état de la partie
+  (`Board` dans `app/game/board.py`), ce qui rend ce point accessible.
