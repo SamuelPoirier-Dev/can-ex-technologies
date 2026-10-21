@@ -1,0 +1,8 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# OS / editors
+.DS_Store
+.idea/
