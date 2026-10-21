@@ -10,7 +10,7 @@ Timebox : 2 heures. Backend Python + FastAPI, frontend React + TypeScript.
 | 2 | Moteur de jeu pur + tests unitaires des règles | Fait |
 | 3 | API REST : créer, rejoindre, lire l'état, jouer son tour | Fait |
 | 4 | Temps réel : WebSocket par partie, diffusion de l'état | Fait |
-| 5 | Frontend jouable : lobby, plateau, joueurs, tour, journal, gagnant | À faire |
+| 5 | Frontend jouable : lobby, plateau, joueurs, tour, journal, gagnant | Fait |
 | 6 | Finition : README complet, essai réel à plusieurs onglets | À faire |
 
 Priorité en cas de manque de temps : on simplifie d'abord le visuel de l'étape 5,
@@ -32,7 +32,7 @@ jamais les tests du moteur.
 - **D7 — Démarrage** : le créateur choisit la taille (2 à 4) ; la partie démarre
   automatiquement quand elle est pleine ; ordre de jeu = ordre d'arrivée.
 - **D8 — Identité** : pas de comptes ; le serveur remet un jeton de joueur à la
-  jonction, gardé dans le `localStorage`. Seul son détenteur peut jouer son tour.
+  jonction, gardé côté navigateur (`sessionStorage`, voir D38). Seul son détenteur peut jouer son tour.
 - **D9 — Tour** : un seul clic « Lancer le dé » résout tout le tour (déplacement,
   salaire, achat/loyer, faillite, joueur suivant). Pas de doubles.
 - **D10 — Temps réel** : WebSocket par partie qui pousse l'état complet à chaque
@@ -114,3 +114,19 @@ jamais les tests du moteur.
   `HTTPConnection` sert à la fois aux requêtes HTTP et aux WebSockets. Les tests
   d'API partagent leur client (`tests/api/conftest.py`) et leurs utilitaires
   (`tests/api/helpers.py`).
+- **D38 — `sessionStorage` plutôt que `localStorage`** (révise D8) : propre à
+  chaque onglet, donc plusieurs joueurs possibles dans un même navigateur (tests
+  et démo) ; survit au rechargement. Fermer l'onglet fait perdre sa place.
+- **D39 — Le WebSocket est la seule source de l'état affiché** : la réponse REST
+  d'un tour ne sert qu'aux erreurs. Même chemin de mise à jour pour tous.
+- **D40 — Pas de routeur** : deux écrans (`/` et `/game/CODE`), lus depuis
+  `window.location` ; navigation par `history.pushState`.
+- **D41 — Plateau en anneau sur une grille 5×5** : le pourtour compte 16 cases ;
+  `ringCell` (`src/lib/board.ts`) calcule la position. Départ en bas à droite,
+  sens horaire comme au Monopoly. Le centre affiche le dé et le bouton.
+- **D42 — Types TypeScript écrits à la main** (`src/api/types.ts`), calqués sur
+  les schémas Pydantic. Génération depuis OpenAPI notée pour « plus de temps ».
+- **D43 — Reconnexion WebSocket** après 1 s, sauf code 4404 (« Partie
+  introuvable »).
+- **D44 — Logique d'affichage dans des fonctions pures** (`src/lib/` : position
+  des cases, couleurs, texte du journal), séparées des composants.

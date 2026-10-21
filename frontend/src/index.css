@@ -1,9 +1,279 @@
 :root {
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light dark;
+  --bg: #f8f9fa;
+  --card: #ffffff;
+  --text: #212529;
+  --muted: #6c757d;
+  --border: #dee2e6;
+  --accent: #1971c2;
+  --error: #c92a2a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1b1e;
+    --card: #25262b;
+    --text: #e9ecef;
+    --muted: #909296;
+    --border: #373a40;
+    --accent: #4dabf7;
+    --error: #ff6b6b;
+  }
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: var(--accent);
+}
+
+h1,
+h2 {
+  margin: 0 0 0.5rem;
+}
+
+h2 {
+  font-size: 1.1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  font-size: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--error);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  font-size: 0.75rem;
+  padding: 0 0.4rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* --- Pages --- */
+
+.home {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.game-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.game-header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.banner {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.banner.winner {
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .game-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Board --- */
+
+.board {
+  display: grid;
+  gap: 4px;
+  aspect-ratio: 1;
+  /* Keep the whole board visible on short screens. */
+  max-width: 80vh;
+}
+
+.square {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 4px;
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.square.empty {
+  background: transparent;
+}
+
+.square-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.square-price {
+  color: var(--muted);
+}
+
+.pawns {
+  display: flex;
+  gap: 3px;
+  min-height: 14px;
+}
+
+.pawn {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--card);
+  flex-shrink: 0;
+}
+
+.board-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.turn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.dice {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  font-size: 1.75rem;
+  font-weight: bold;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+}
+
+/* --- Side panels --- */
+
+.players,
+.properties,
+.log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player {
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.player.current {
+  outline: 2px solid var(--accent);
+}
+
+.player.bankrupt {
+  opacity: 0.5;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.money {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.properties {
+  margin: 0.25rem 0 0 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.log {
+  max-height: 320px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.log li {
+  padding: 0.2rem 0;
+  border-bottom: 1px solid var(--border);
 }

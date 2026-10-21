@@ -41,3 +41,6 @@ uv run pytest
   plateau, sur le modèle des extensions (add-ons) des jeux de table modernes.
   Le plateau est déjà une définition statique séparée de l'état de la partie
   (`Board` dans `app/game/board.py`), ce qui rend ce point accessible.
+- **Composant `Square` côté frontend** : extraire de `Board.tsx` tout le contenu
+  d'une case (nom, prix, couleur du propriétaire, pions) dans un sous-composant.
+  `Board` ne garderait que la grille et le placement des cases.

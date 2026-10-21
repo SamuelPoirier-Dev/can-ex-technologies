@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react'
 
-type Health = { status: string }
+import GameView from './components/GameView'
+import Home from './components/Home'
+
+// Two screens only, so no router: "/" is the home page, "/game/CODE" a game.
+function codeFromUrl(): string | null {
+  const match = window.location.pathname.match(/^\/game\/([A-Za-z0-9]+)\/?$/)
+  return match ? match[1].toUpperCase() : null
+}
 
 function App() {
-  const [status, setStatus] = useState('checking...')
+  const [code, setCode] = useState(codeFromUrl)
 
   useEffect(() => {
-    fetch('/api/health')
-      .then((response) => response.json() as Promise<Health>)
-      .then((health) => setStatus(health.status))
-      .catch(() => setStatus('unreachable'))
+    const onPopState = () => setCode(codeFromUrl())
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
-  return (
-    <main>
-      <h1>Monopoly</h1>
-      <p>Backend: {status}</p>
-    </main>
-  )
+  const openGame = (gameCode: string) => {
+    const normalized = gameCode.trim().toUpperCase()
+    window.history.pushState(null, '', `/game/${normalized}`)
+    setCode(normalized)
+  }
+
+  return code ? <GameView key={code} code={code} /> : <Home onOpenGame={openGame} />
 }
 
 export default App
