@@ -205,10 +205,8 @@ justifications dans [PLAN.md](PLAN.md)).
   composants.
 - **Types TypeScript générés** depuis le schéma OpenAPI de FastAPI, au lieu de
   `src/api/types.ts` écrit à la main.
-- **Persistance et passage à l'échelle** : les parties sont en mémoire (perdues
-  au redémarrage) et l'absence de verrou suppose un seul processus. Pour
-  plusieurs instances : un stockage partagé (Redis, PostgreSQL) et une
-  diffusion entre serveurs (Redis pub/sub, par exemple).
+- **Persistance et passage à l'échelle** : les parties sont en mémoire, sur un
+  seul processus ; il faudrait un stockage partagé pour en lancer plusieurs.
 - **Déconnexions et abandons** : un joueur qui quitte bloque la partie ;
   ajouter un délai de tour, un abandon explicite ou un remplacement.
 - **Messages d'erreur en français** : ceux du backend sont en anglais et
