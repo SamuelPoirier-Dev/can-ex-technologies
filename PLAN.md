@@ -11,7 +11,7 @@ Timebox : 2 heures. Backend Python + FastAPI, frontend React + TypeScript.
 | 3 | API REST : créer, rejoindre, lire l'état, jouer son tour | Fait |
 | 4 | Temps réel : WebSocket par partie, diffusion de l'état | Fait |
 | 5 | Frontend jouable : lobby, plateau, joueurs, tour, journal, gagnant | Fait |
-| 6 | Finition : README complet, essai réel à plusieurs onglets | À faire |
+| 6 | Finition : README complet, essai réel à plusieurs onglets | Fait |
 
 Priorité en cas de manque de temps : on simplifie d'abord le visuel de l'étape 5,
 jamais les tests du moteur.
