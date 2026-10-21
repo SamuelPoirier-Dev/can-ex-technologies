@@ -9,7 +9,7 @@ Timebox : 2 heures. Backend Python + FastAPI, frontend React + TypeScript.
 | 1 | Squelette exécutable de bout en bout (FastAPI + Vite/React/TS, `/api/health`) | Fait |
 | 2 | Moteur de jeu pur + tests unitaires des règles | Fait |
 | 3 | API REST : créer, rejoindre, lire l'état, jouer son tour | Fait |
-| 4 | Temps réel : WebSocket par partie, diffusion de l'état | À faire |
+| 4 | Temps réel : WebSocket par partie, diffusion de l'état | Fait |
 | 5 | Frontend jouable : lobby, plateau, joueurs, tour, journal, gagnant | À faire |
 | 6 | Finition : README complet, essai réel à plusieurs onglets | À faire |
 
@@ -76,7 +76,7 @@ jamais les tests du moteur.
   Ce sont des constantes ajustables ; `tests/game/test_balance.py` garantit
   qu'une partie à 2 joueurs se termine en moins de 200 tours.
 - **D25 — `GameRoom` autour de `Game`** (`app/rooms.py`) : associe les jetons aux
-  joueurs (et, à l'étape 4, les connexions WebSocket). Le domaine ignore jetons et
+  joueurs (les connexions WebSocket sont finalement dans `LiveHub`, voir D33). Le domaine ignore jetons et
   réseau. `RoomRegistry` stocke les salles en mémoire (`{code: GameRoom}`).
 - **D26 — Code de partie** : 6 caractères sans 0/O ni 1/I ; sert d'identifiant
   dans l'URL ; accepté sans tenir compte de la casse.
@@ -97,3 +97,20 @@ jamais les tests du moteur.
   jeton. Le même état sera poussé par WebSocket (étape 4).
 - **D32 — Fabrique `create_app()`** : chaque test crée une app neuve avec son
   propre registre, donc pas d'état partagé entre tests.
+- **D33 — `LiveHub` séparé de `GameRoom`** (`app/api/hub.py`) : registre
+  `{code: connexions}` et diffusion. `rooms.py` reste indépendant de FastAPI et le
+  hub se teste seul avec de faux WebSockets. La route WebSocket est dans
+  `app/api/live.py`.
+- **D34 — WebSocket en lecture seule, sans jeton** : l'état ne contient aucun
+  secret ; les actions restent en REST avec jeton. Un spectateur peut suivre.
+- **D35 — État complet à chaque message** (`{"type": "state", "game": ...}`) :
+  le client remplace son état ; une reconnexion reçoit tout d'un coup. L'état est
+  envoyé à la connexion, puis après chaque jonction et chaque tour (pas à la
+  création : personne n'écoute encore).
+- **D36 — Robustesse** : un envoi qui échoue retire la connexion sans faire
+  échouer la requête du joueur ; une partie inconnue ferme le WebSocket avec le
+  code applicatif 4404.
+- **D37 — Dépendances partagées** (`app/api/deps.py`) : registre, hub, dé, jeton.
+  `HTTPConnection` sert à la fois aux requêtes HTTP et aux WebSockets. Les tests
+  d'API partagent leur client (`tests/api/conftest.py`) et leurs utilitaires
+  (`tests/api/helpers.py`).

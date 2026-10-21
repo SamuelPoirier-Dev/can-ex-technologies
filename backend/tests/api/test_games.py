@@ -1,47 +1,8 @@
-from collections.abc import Iterator
-
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api.routes import get_dice
 from app.game.board import DEFAULT_BOARD, STARTING_MONEY
-from app.main import create_app
-
-FIXED_ROLL = 1  # Lands on square 1, a property.
-
-
-@pytest.fixture
-def client() -> Iterator[TestClient]:
-    app = create_app()
-    app.dependency_overrides[get_dice] = lambda: lambda: FIXED_ROLL
-    with TestClient(app) as test_client:
-        yield test_client
-
-
-def auth(token: str) -> dict[str, str]:
-    return {"Authorization": f"Bearer {token}"}
-
-
-def create_game(client: TestClient, max_players: int = 2, name: str = "Alice") -> dict:
-    response = client.post(
-        "/api/games", json={"max_players": max_players, "player_name": name}
-    )
-    assert response.status_code == 201
-    return response.json()
-
-
-def join_game(client: TestClient, code: str, name: str = "Bob") -> dict:
-    response = client.post(f"/api/games/{code}/players", json={"player_name": name})
-    assert response.status_code == 201
-    return response.json()
-
-
-def started_game(client: TestClient) -> tuple[str, str, str]:
-    """Returns (code, alice_token, bob_token) for a started 2-player game."""
-    alice = create_game(client)
-    code = alice["game"]["id"]
-    bob = join_game(client, code)
-    return code, alice["token"], bob["token"]
+from tests.api.helpers import auth, create_game, join_game, started_game
 
 
 # --- Create / join / read ---

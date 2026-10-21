@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.api.routes import router
+from app.api import live, routes
+from app.api.hub import LiveHub
 from app.game.errors import GameError, InvalidPlayerCount
 from app.rooms import GameNotFound, InvalidToken, RoomRegistry
 
@@ -22,6 +23,7 @@ async def handle_error(_: Request, exc: Exception) -> JSONResponse:
 def create_app() -> FastAPI:
     app = FastAPI(title="Monopoly")
     app.state.registry = RoomRegistry()
+    app.state.hub = LiveHub()
 
     for error in (GameError, GameNotFound, InvalidToken):
         app.add_exception_handler(error, handle_error)
@@ -30,7 +32,8 @@ def create_app() -> FastAPI:
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    app.include_router(router)
+    app.include_router(routes.router)
+    app.include_router(live.router)
     return app
 
 
