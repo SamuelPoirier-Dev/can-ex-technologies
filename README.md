@@ -37,8 +37,6 @@ npm install
 npm run dev
 ```
 
-Chaque bloc commence par un `cd` vers le bon dossier.
-
 Puis ouvrir http://localhost:5173. Le serveur Vite redirige `/api` et `/ws`
 vers le backend (port 8000), donc le navigateur ne parle qu'à une seule adresse.
 
